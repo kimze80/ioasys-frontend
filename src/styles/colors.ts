@@ -1,0 +1,11 @@
+export const white = '#d8d8d8';
+export const white_two = '#ffffff';
+export const dark_indigo = '#1a0e49';
+export const warm_grey = '#8d8c8c';
+export const greeny_blue = '#57bbbc';
+export const charcoal_grey = '#383743';
+export const charcoal_grey_two = '#403e4d';
+export const greyish = '#b5b4b4';
+export const night_blue = '#0d0430';
+export const medium_pink = '#ee4c77';
+export const error = '#ff0f44';
