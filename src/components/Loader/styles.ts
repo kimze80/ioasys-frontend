@@ -7,14 +7,6 @@ interface LoaderProps {
 
 export const Container = styled.div<LoaderProps>`
   display: ${({ loading }) => (loading === 1 ? 'block' : 'none')};
-  /* width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: #fff;
-  opacity: 0.5;
-  z-index: 1; */
 
   h3 {
     position: absolute;
@@ -45,5 +37,4 @@ export const BlurBackground = styled.div`
   background: #fff;
   opacity: 0.6;
   z-index: 1;
-  border-radius: 20px;
 `;

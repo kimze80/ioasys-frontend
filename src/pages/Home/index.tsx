@@ -15,6 +15,9 @@ const Home: React.FC = () => {
   const [searchName, setSearchName] = useState<string>('');
   const [enterprisesList, setEnterprisesList] = useState<[]>();
   const [loading, setLoading] = useState<number>(0);
+  const [enterpriseNotFoundMessage, setEnterpriseNotFoundMessage] = useState<
+    string
+  >('');
 
   useEffect(() => {
     const token = localStorage.getItem('ioasys:token');
@@ -43,9 +46,17 @@ const Home: React.FC = () => {
 
   const enterprises = useMemo(() => {
     return enterprisesList?.filter((e: EnterpriseData) => {
-      return e.enterprise_name
+      const enterprise = e.enterprise_name
         ?.toLowerCase()
         .includes(searchName.toLowerCase());
+
+      if (enterprise) {
+        return enterprise;
+      }
+
+      setEnterpriseNotFoundMessage(
+        'Nenhuma empresa foi encontrada para a busca realizada.',
+      );
     });
   }, [enterprisesList, searchName]);
 
@@ -70,44 +81,54 @@ const Home: React.FC = () => {
               placeholder="Pesquisar"
               clearInputButton
               autoFocus
-              onChange={(e) => setSearchName(e.currentTarget.value)}
+              onChange={(e) => {
+                setSearchName(e.currentTarget.value);
+                !e.currentTarget.value.length &&
+                  setEnterpriseNotFoundMessage('');
+              }}
               closeInputOnClick={() => setToggleSearch(!toggleSearch)}
             />
           </form>
         )}
       </Topbar>
-      <Content>
-        {searchName ? (
-          enterprises?.map((e: EnterpriseData) => (
-            <Link
-              to={`/enterprise/${e.id}`}
-              style={{
-                textDecoration: 'none',
-                color: 'inherit',
-              }}
-              key={e?.id}
-            >
-              <ResultCard key={e?.id}>
-                <div className="enterprise-photo">
-                  <img
-                    src={`https://empresas.ioasys.com.br${e?.photo}`}
-                    alt=""
-                  />
-                </div>
-                <div className="enterprise-profile">
-                  <p className="enterprise-name">{e.enterprise_name}</p>
-                  <p className="enterprise-business-type">
-                    {e.enterprise_type.enterprise_type_name}
-                  </p>
-                  <p className="enterprise-country">{e.country}</p>
-                </div>
-              </ResultCard>
-            </Link>
-          ))
-        ) : (
-          <p className="initial-message">Clique na busca para iniciar</p>
-        )}
-      </Content>
+      {!toggleSearch ? (
+        <Content>
+          {searchName && enterprises?.length !== 0 ? (
+            enterprises?.map((e: EnterpriseData) => (
+              <Link
+                to={`/enterprise/${e.id}`}
+                style={{
+                  textDecoration: 'none',
+                  color: 'inherit',
+                }}
+                key={e?.id}
+              >
+                <ResultCard key={e?.id}>
+                  <div className="enterprise-photo">
+                    <img
+                      src={`https://empresas.ioasys.com.br${e?.photo}`}
+                      alt=""
+                    />
+                  </div>
+                  <div className="enterprise-profile">
+                    <p className="enterprise-name">{e.enterprise_name}</p>
+                    <p className="enterprise-business-type">
+                      {e.enterprise_type.enterprise_type_name}
+                    </p>
+                    <p className="enterprise-country">{e.country}</p>
+                  </div>
+                </ResultCard>
+              </Link>
+            ))
+          ) : (
+            <p className="initial-message">{enterpriseNotFoundMessage}</p>
+          )}
+        </Content>
+      ) : (
+        <Content>
+          <p className="initial-message">Clique na busca para iniciar.</p>
+        </Content>
+      )}
     </Container>
   );
 };
